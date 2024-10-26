@@ -1,0 +1,16 @@
+# tests/test_models.py
+import pytest
+from myapp.models import MyModel
+
+@pytest.mark.django_db
+def test_find_by_name():
+    # Arrange: Create instances of MyModel
+    MyModel.objects.create(name="Alice", field2=101)
+    MyModel.objects.create(name="Bob", field2=202)
+    
+    # Act: Retrieve the instance with name "Alice"
+    instance = MyModel.objects.get(name="Alice")
+    
+    # Assert: Check if the correct instance is retrieved
+    assert instance.name == "Alice"
+    assert instance.field2 == 101
