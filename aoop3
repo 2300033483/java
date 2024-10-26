@@ -1,0 +1,18 @@
+# tests/test_models.py
+import pytest
+from myapp.models import MyModel
+
+@pytest.mark.django_db
+def test_update_model_instance():
+    # Arrange: Create an instance of MyModel
+    instance = MyModel.objects.create(field1="Original", field2=123)
+    
+    # Act: Update the instance fields
+    instance.field1 = "Updated"
+    instance.field2 = 456
+    instance.save()
+    
+    # Assert: Check if the fields were updated correctly
+    updated_instance = MyModel.objects.get(id=instance.id)
+    assert updated_instance.field1 == "Updated"
+    assert updated_instance.field2 == 456
