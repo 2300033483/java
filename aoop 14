@@ -1,0 +1,22 @@
+# tests/test_routes.py
+import pytest
+from myapp.models import MyModel
+from rest_framework.test import APIClient
+from django.urls import reverse
+
+@pytest.mark.django_db
+def test_list_by_category():
+    # Arrange: Create instances of MyModel with different categories
+    MyModel.objects.create(name="Item 1", category="Category A", field1="Data 1")
+    MyModel.objects.create(name="Item 2", category="Category B", field1="Data 2")
+    MyModel.objects.create(name="Item 3", category="Category A", field1="Data 3")
+    client = APIClient()
+    
+    # Act: Send a GET request to filter instances by category "Category A"
+    url = reverse('mymodel-list') + '?category=Category A'  # Replace with actual route name
+    response = client.get(url)
+    
+    # Assert: Verify the response status and check the list of items
+    assert response.status_code == 200
+    assert len(response.data) == 2  # Expecting 2 items in "Category A"
+    assert all(item['category'] == "Category A" for item in response.data)
