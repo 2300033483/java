@@ -1,0 +1,24 @@
+# tests/test_routes.py
+import pytest
+from myapp.models import MyModel
+from rest_framework.test import APIClient
+from django.urls import reverse
+
+@pytest.mark.django_db
+def test_list_all_model_instances():
+    # Arrange: Create multiple instances of MyModel
+    MyModel.objects.create(name="Item 1", field1="Data 1")
+    MyModel.objects.create(name="Item 2", field1="Data 2")
+    MyModel.objects.create(name="Item 3", field1="Data 3")
+    client = APIClient()
+    
+    # Act: Send a GET request to retrieve all instances
+    url = reverse('mymodel-list')  # Replace with actual route name for list view
+    response = client.get(url)
+    
+    # Assert: Verify the response status and check the list of items
+    assert response.status_code == 200
+    assert len(response.data) == 3
+    assert response.data[0]['name'] == "Item 1"
+    assert response.data[1]['name'] == "Item 2"
+    assert response.data[2]['name'] == "Item 3"
