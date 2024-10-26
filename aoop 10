@@ -1,0 +1,25 @@
+# tests/test_routes.py
+import pytest
+from myapp.models import MyModel
+from rest_framework.test import APIClient
+from django.urls import reverse
+
+@pytest.mark.django_db
+def test_update_model_instance():
+    # Arrange: Create an initial instance of MyModel
+    instance = MyModel.objects.create(name="Original Name", field1="Original Data")
+    client = APIClient()
+    
+    # Act: Send a PUT request to update the instance
+    url = reverse('mymodel-detail', args=[instance.id])  # Replace with actual route name
+    updated_data = {
+        "name": "Updated Name",
+        "field1": "Updated Data"
+    }
+    response = client.put(url, updated_data, format='json')
+    
+    # Assert: Verify the response status and updated data
+    assert response.status_code == 200
+    instance.refresh_from_db()  # Refresh instance to get updated values from the database
+    assert instance.name == "Updated Name"
+    assert instance.field1 == "Updated Data"
