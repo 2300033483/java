@@ -1,0 +1,22 @@
+# tests/test_routes.py
+import pytest
+from myapp.models import MyModel
+from rest_framework.test import APIClient
+from django.urls import reverse
+
+@pytest.mark.django_db
+def test_list_by_availability():
+    # Arrange: Create instances of MyModel with different availability statuses
+    MyModel.objects.create(name="Item 1", availability=True)
+    MyModel.objects.create(name="Item 2", availability=False)
+    MyModel.objects.create(name="Item 3", availability=True)
+    client = APIClient()
+    
+    # Act: Send a GET request to filter instances by availability (True)
+    url = reverse('mymodel-list') + '?availability=True'  # Replace with actual route name and parameter syntax if needed
+    response = client.get(url)
+    
+    # Assert: Verify the response status and check the list of items
+    assert response.status_code == 200
+    assert len(response.data) == 2  # Expecting 2 items with availability=True
+    assert all(item['availability'] is True for item in response.data)
