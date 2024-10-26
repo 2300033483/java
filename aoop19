@@ -1,0 +1,28 @@
+# service/routes.py
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from myapp.models import MyModel
+from myapp.serializers import MyModelSerializer
+from rest_framework import status
+
+@api_view(['GET'])
+def list_all_models(request):
+    """
+    List all instances of MyModel or filter by name, category, or availability if provided.
+    """
+    name = request.query_params.get('name')
+    category = request.query_params.get('category')
+    availability = request.query_params.get('availability')
+
+    # Apply filters if any are provided in the query parameters
+    queryset = MyModel.objects.all()
+    if name:
+        queryset = queryset.filter(name__iexact=name)
+    if category:
+        queryset = queryset.filter(category__iexact=category)
+    if availability is not None:
+        availability_bool = availability.lower() == 'true'
+        queryset = queryset.filter(availability=availability_bool)
+    
+    serializer = MyModelSerializer(queryset, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
