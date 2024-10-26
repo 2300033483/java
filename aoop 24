@@ -1,0 +1,30 @@
+from behave import given, when, then
+
+# Mock data for the example
+products = []
+search_message = ""
+
+@given('the following products exist:')
+def step_impl_given_products_exist(context):
+    global products
+    products = [row['name'] for row in context.table]
+
+@when('I press the Clear button')
+def step_impl_press_clear(context):
+    global products
+    products.clear()  # Clears previous entries
+
+@when('I press the Search button')
+def step_impl_press_search(context):
+    global search_message
+    search_message = "Success"  # Simulating a search success message
+
+@then('I should see the message "{message}"')
+def step_impl_check_message(context, message):
+    assert search_message == message
+
+@then('I should see the following products in the results:')
+def step_impl_check_products(context):
+    expected_products = [row['name'] for row in context.table]
+    for product in expected_products:
+        assert product in products, f"{product} not found in the results"
