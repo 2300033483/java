@@ -1,0 +1,12 @@
+from behave import given, when, then
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+
+@given('I have opened the web application')
+def step_given_opened_web_application(context):
+    context.browser = webdriver.Chrome()  # or use another browser driver
+    context.browser.get('http://example.com')  # replace with your application URL
+
+@then('I should not see the text "{text}" on the page')
+def step_then_not_see_text(context, text):
+    assert text not in context.browser.page_source, f"Unexpected text '{text}' found on the page."
