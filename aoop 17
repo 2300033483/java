@@ -1,0 +1,22 @@
+# service/routes.py
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from rest_framework import status
+from myapp.models import MyModel
+from myapp.serializers import MyModelSerializer
+
+@api_view(['PUT'])
+def update_model_instance(request, pk):
+    """
+    Update an existing MyModel instance by its primary key (pk).
+    """
+    try:
+        instance = MyModel.objects.get(pk=pk)
+    except MyModel.DoesNotExist:
+        return Response({'error': 'Item not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = MyModelSerializer(instance, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
