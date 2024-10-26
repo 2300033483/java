@@ -1,0 +1,22 @@
+# tests/test_routes.py
+import pytest
+from myapp.models import MyModel
+from rest_framework.test import APIClient
+from django.urls import reverse
+
+@pytest.mark.django_db
+def test_list_by_name():
+    # Arrange: Create instances of MyModel with different names
+    MyModel.objects.create(name="Alice", field1="Data A")
+    MyModel.objects.create(name="Bob", field1="Data B")
+    MyModel.objects.create(name="Alice", field1="Data C")
+    client = APIClient()
+    
+    # Act: Send a GET request to filter instances by name "Alice"
+    url = reverse('mymodel-list') + '?name=Alice'  # Replace with actual route name
+    response = client.get(url)
+    
+    # Assert: Verify the response status and check the list of items
+    assert response.status_code == 200
+    assert len(response.data) == 2  # Expecting 2 items with name "Alice"
+    assert all(item['name'] == "Alice" for item in response.data)
