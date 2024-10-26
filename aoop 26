@@ -1,0 +1,21 @@
+from behave import given, when, then
+
+@given('I am on the product search page')
+def step_given_on_product_search_page(context):
+    context.browser.get('http://example.com/products')
+
+@when('I select the availability filter "{availability}"')
+def step_when_select_availability_filter(context, availability):
+    availability_dropdown = context.browser.find_element_by_id('availability')
+    availability_dropdown.select_by_visible_text(availability)
+
+@when('I click the search button')
+def step_when_click_search_button(context):
+    search_button = context.browser.find_element_by_id('search_button')
+    search_button.click()
+
+@then('I should see products that are "{availability}"')
+def step_then_see_available_products(context, availability):
+    products = context.browser.find_elements_by_class_name('product')
+    for product in products:
+        assert availability in product.text, f"Expected availability '{availability}' in product '{product.text}'"
