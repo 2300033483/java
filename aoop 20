@@ -1,0 +1,16 @@
+# features/steps/load_steps.py
+from behave import given
+from myapp.models import Product
+
+@given('the following products exist')
+def step_impl(context):
+    """
+    Load background data for products before tests.
+    """
+    for row in context.table:
+        Product.objects.create(
+            name=row['name'],
+            category=row['category'],
+            price=row['price'],
+            availability=row['availability'] == 'True'
+        )
