@@ -1,0 +1,13 @@
+import factory
+from faker import Faker
+from myapp.models import Product  # Adjust to your app's product model path
+
+fake = Faker()
+
+class ProductFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Product
+
+    name = factory.LazyAttribute(lambda _: fake.word())
+    price = factory.LazyAttribute(lambda _: fake.random_number(digits=5))
+    description = factory.LazyAttribute(lambda _: fake.text())
