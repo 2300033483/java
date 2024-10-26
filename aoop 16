@@ -1,0 +1,19 @@
+# service/routes.py
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from rest_framework import status
+from myapp.models import MyModel
+from myapp.serializers import MyModelSerializer
+
+@api_view(['GET'])
+def read_model_instance(request, pk):
+    """
+    Retrieve a single MyModel instance by its primary key (pk).
+    """
+    try:
+        instance = MyModel.objects.get(pk=pk)
+    except MyModel.DoesNotExist:
+        return Response({'error': 'Item not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = MyModelSerializer(instance)
+    return Response(serializer.data, status=status.HTTP_200_OK)
