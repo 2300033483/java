@@ -1,0 +1,18 @@
+# service/routes.py
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from rest_framework import status
+from myapp.models import MyModel
+
+@api_view(['DELETE'])
+def delete_model_instance(request, pk):
+    """
+    Delete a MyModel instance by its primary key (pk).
+    """
+    try:
+        instance = MyModel.objects.get(pk=pk)
+    except MyModel.DoesNotExist:
+        return Response({'error': 'Item not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    instance.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
